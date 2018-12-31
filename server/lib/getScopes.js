@@ -50,5 +50,9 @@ export default function(user) {
     permissions.push(constants.ADMIN_PERMISSION);
   }
 
+  if (roles.indexOf(constants.INVITE_ROLE_NAME) >= 0 && permissions.indexOf(constants.INVITE_PERMISSION) < 0) {
+    permissions.push(constants.INVITE_PERMISSION);
+  }
+
   return permissions;
 };

@@ -16,7 +16,8 @@ export default (scriptManager) => {
     const me = {
       createMemberships: false,
       memberships: [],
-      role
+      role,
+      permissions: req.user.scope,
     };
 
     const membershipContext = {

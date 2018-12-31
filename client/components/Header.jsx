@@ -8,7 +8,7 @@ export default class Header extends Component {
   static propTypes = {
     user: PropTypes.object,
     getDictValue: PropTypes.func,
-    accessLevel: PropTypes.object,
+    access: PropTypes.object,
     issuer: PropTypes.string,
     onLogout: PropTypes.func.isRequired,
     onCssToggle: PropTypes.func.isRequired,
@@ -71,32 +71,23 @@ export default class Header extends Component {
     return '';
   }
 
-  getMenu(isAdmin, languageDictionary) {
-    if (!isAdmin) {
-      return (
-        <ul role="menu" className="dropdown-menu">
-          {this.renderCssSwitcher(languageDictionary)}
-          <li role="presentation">
-            <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">
-              {languageDictionary.logoutMenuItemText || 'Logout'}
-            </a>
-          </li>
-        </ul>
-      );
-    }
-
+  getMenu(access, languageDictionary) {
     return (
       <ul role="menu" className="dropdown-menu">
-        <li role="presentation">
-          <Link to="/users" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
-            {languageDictionary.usersAndLogsMenuItemText || 'Users & Logs'}
-          </Link>
-        </li>
-        <li role="presentation">
-          <Link to="/configuration" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
-            {languageDictionary.configurationMenuItemText || 'Configuration'}
-          </Link>
-        </li>
+        {access.canManageConfiguration() && (
+          <li role="presentation">
+            <Link to="/users" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
+              {languageDictionary.usersAndLogsMenuItemText || 'Users & Logs'}
+            </Link>
+          </li>
+        )}
+        {access.canManageConfiguration() && (
+          <li role="presentation">
+            <Link to="/configuration" onFocus={this.showOnFocus} onBlur={this.hideOnBlur}>
+              {languageDictionary.configurationMenuItemText || 'Configuration'}
+            </Link>
+          </li>
+        )}
         {this.renderCssSwitcher(languageDictionary)}
         <li role="presentation">
           <a role="menuitem" onClick={this.props.onLogout} onFocus={this.showOnFocus} onBlur={this.hideOnBlur} onKeyUp={this.onKeyUp} tabIndex="0">
@@ -107,8 +98,8 @@ export default class Header extends Component {
     );
   }
 
-  renderTitle = (isAdmin) => {
-    if (isAdmin && window.config.AUTH0_MANAGE_URL) {
+  renderTitle = (access) => {
+    if (access.canManageConfiguration() && window.config.AUTH0_MANAGE_URL) {
       return <a className="navbar-brand" href={window.config.AUTH0_MANAGE_URL}>{this.props.getDictValue('title', window.config.TITLE)}</a>;
     }
 
@@ -116,15 +107,14 @@ export default class Header extends Component {
   };
 
   render() {
-    const { user, issuer, accessLevel } = this.props;
+    const { user, issuer, access } = this.props;
     const languageDictionary = this.props.languageDictionary || {};
-    const isAdmin = accessLevel.role === 2;
     return (
       <header className="dashboard-header">
         <nav title="header" role="navigation" className="navbar navbar-default">
           <div className="container">
             <div id="header" className="navbar-header" style={{ width: '800px' }}>
-              {this.renderTitle(isAdmin)}
+              {this.renderTitle(access)}
             </div>
             <div id="navbar-collapse" className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
@@ -142,7 +132,7 @@ export default class Header extends Component {
                     </span>
                     <i className="icon-budicon-460"></i>
                   </span>
-                  {this.getMenu(isAdmin, languageDictionary)}
+                  {this.getMenu(access, languageDictionary)}
                 </li>
               </ul>
             </div>

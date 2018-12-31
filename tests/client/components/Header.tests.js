@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import { Link } from 'react-router';
 
+import permissions, { ADMIN_PERMISSION } from '../../../client/utils/permissions';
 import Header from '../../../client/components/Header';
 
 describe('#Client-Components-Header', () => {
@@ -30,7 +31,7 @@ describe('#Client-Components-Header', () => {
     options = options || {};
     const getDictValue = options.getDictValue || defaultGetDictValue;
     const user = options.user || dummyUser;
-    const accessLevel = options.accessLevel || {};
+    const accessLevel = options.accessLevel || { role: 0, permissions: [] };
     const issuer = options.issuer || 'issuer';
     const renderCssToggle = options.cssToggle || false;
     const styleSettings = options.styleSettings || { useAlt: false };
@@ -39,7 +40,7 @@ describe('#Client-Components-Header', () => {
       <Header
         user={options.user === null ? null : fromJS(user)}
         getDictValue={getDictValue}
-        accessLevel={accessLevel}
+        access={permissions(fromJS({ record: accessLevel }))}
         issuer={issuer}
         onLogout={logout}
         onCssToggle={cssToggle}
@@ -84,7 +85,7 @@ describe('#Client-Components-Header', () => {
   };
 
   it('should render admin', () => {
-    const component = renderComponent({ accessLevel: { role: 2 } });
+    const component = renderComponent({ accessLevel: { role: 2, permissions: [ ADMIN_PERMISSION ] } });
 
     expect(component.length).to.be.greaterThan(0);
 
@@ -187,7 +188,7 @@ describe('#Client-Components-Header', () => {
     };
 
     const component = renderComponent({
-      accessLevel: { role: 2 },
+      accessLevel: { role: 2, permissions: [ ADMIN_PERMISSION ] },
       languageDictionary,
       getDictValue: () => 'menuName'
     });
@@ -228,7 +229,7 @@ describe('#Client-Components-Header', () => {
 
   it('should render cssToggle menu item for Admin', () => {
     const options = {
-      accessLevel: { role: 2 },
+      accessLevel: { role: 2, permissions: [ ADMIN_PERMISSION ] },
       renderCssToggle: true,
       languageDictionary: { toggleStyleSetAlternative: 'Switch to Alternative' }
     };

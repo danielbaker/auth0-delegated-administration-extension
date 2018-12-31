@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Pagination, TableTotals } from 'auth0-extension-ui';
 
 import { connectionActions, userActions } from '../../actions';
+import permissions from '../../utils/permissions';
 
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
@@ -21,7 +22,7 @@ class Users extends Component {
     userCreateError: PropTypes.string,
     userCreateLoading: PropTypes.bool,
     validationErrors: PropTypes.object,
-    accessLevel: PropTypes.object,
+    access: PropTypes.object,
     total: PropTypes.number,
     fetchUsers: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
@@ -63,7 +64,7 @@ class Users extends Component {
 
   createUser = () => {
     this.props.requestCreateUser(
-      this.props.accessLevel.get('record').get('memberships') && this.props.accessLevel.get('record').get('memberships').toJS()
+      this.props.access.memberships()
     );
   };
 
@@ -78,7 +79,7 @@ class Users extends Component {
       users,
       total,
       connections,
-      accessLevel,
+      access,
       nextPage,
       pages,
       settings,
@@ -89,7 +90,6 @@ class Users extends Component {
     } = this.props;
 
     const userFields = (settings && settings.userFields) || [];
-    const role = accessLevel.get('record').get('role');
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userUsersTabTitle || 'Users'} - ${originalTitle}`;
 
@@ -97,14 +97,20 @@ class Users extends Component {
       <div className="users">
         <TabsHeader
           languageDictionary={languageDictionary}
-          role={role} />
+          access={access} />
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
             <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {(connections.length && role > 0) ?
+            {(connections.length && access.canCreateUsers()) ?
               <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.createUserButtonText || 'Create User'}
+              </button>
+              : ''}
+            {access.canInviteUsers() ?
+              <button id="invite-user-button" className="btn btn-default pull-right new" onClick={this.createUser}>
+                <i className="icon-budicon-473"></i>
+                {languageDictionary.inviteUserButtonText || 'Invite User'}
               </button>
               : ''}
           </div>
@@ -120,7 +126,6 @@ class Users extends Component {
           nextPage={nextPage}
           pages={pages}
           loading={loading}
-          role={accessLevel.role}
           userFields={userFields}
           sortProperty={sortProperty}
           sortOrder={sortOrder}
@@ -149,7 +154,7 @@ class Users extends Component {
 
 function mapStateToProps(state) {
   return {
-    accessLevel: state.accessLevel,
+    access: permissions(state.accessLevel),
     error: state.users.get('error'),
     userCreateError: state.userCreate.get('error'),
     userCreateLoading: state.userCreate.get('loading'),

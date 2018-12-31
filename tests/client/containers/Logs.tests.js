@@ -10,6 +10,7 @@ import moment from 'moment';
 
 import fakeStore from '../../utils/fakeStore';
 
+import permissions, {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../client/utils/permissions';
 import Logs from '../../../client/containers/Logs';
 import TabsHeader from '../../../client/components/TabsHeader';
 import LogsTable from '../../../client/components/Logs/LogsTable';
@@ -21,7 +22,7 @@ const memoryHistory = createMemoryHistory({});
 
 class LogsWrapper extends Component {
   render() {
-    return <Logs accessLevel={{ role: 1 }}/>;
+    return <Logs access={permissions(fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] }}))} />;
   }
 }
 

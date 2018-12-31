@@ -67,6 +67,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('create');
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
+    this.props.fetchScript('invites');
   };
 
   saveScript = (name) => () => {
@@ -177,7 +178,7 @@ export default connectContainer(class extends Component {
                   <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.settings && scripts.settings.error)} />
                   <p>
                     With the <strong>settings query</strong> you can control the title and the look-and-feel of the
-                    dashboard after the user has logged in?
+                    dashboard after the user has logged in
                   </p>
                   <Editor
                     value={code.settings || ''}
@@ -186,6 +187,23 @@ export default connectContainer(class extends Component {
                   <div className="save-config">
                     <button onClick={this.saveScript('settings')} className="btn btn-success">
                       Save Settings Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={6} title={code.invites && code.invites.length ? <span>Invites Query</span> : <i>Invites Query</i>}>
+                <LoadingPanel show={scripts.invites && scripts.invites.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.invites && scripts.invites.error)} />
+                  <p>
+                    With the <strong>invites query</strong> you provide an implementation to fetch existing user invites.
+                  </p>
+                  <Editor
+                    value={code.invites || ''}
+                    onChange={this.onEditorChanged('invites')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveScript('invites')} className="btn btn-success">
+                      Save Invites Query
                     </button>
                   </div>
                 </LoadingPanel>

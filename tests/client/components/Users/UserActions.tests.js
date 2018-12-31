@@ -5,6 +5,7 @@ import { describe, it } from 'mocha';
 import { fromJS } from 'immutable';
 
 import UserActions from '../../../../client/components/Users/UserActions';
+import permissions, { USER_PERMISSION } from '../../../../client/utils/permissions';
 
 describe('#Client-Components-UserActions', () => {
   const blockUser = () => 'blockUser';
@@ -22,6 +23,7 @@ describe('#Client-Components-UserActions', () => {
   const renderComponent = (user, languageDictionary, userFields = [{ edit: true }]) => {
     return shallow(
       <UserActions
+        access={permissions(fromJS({ record: { permissions: [ USER_PERMISSION ] }}))}
         blockUser={blockUser}
         changeEmail={changeEmail}
         changePassword={changePassword}

@@ -16,7 +16,7 @@ class LogsContainer extends Component {
     fetchLog: PropTypes.func.isRequired,
     fetchLogs: PropTypes.func.isRequired,
     log: PropTypes.object,
-    accessLevel: PropTypes.object,
+    access: PropTypes.object,
     logs: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object.isRequired
@@ -53,13 +53,13 @@ class LogsContainer extends Component {
   }
 
   render() {
-    const { log, logs, accessLevel, languageDictionary, settings } = this.props;
+    const { log, logs, access, languageDictionary, settings } = this.props;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userLogsTabTitle || 'Logs'} - ${originalTitle}`;
 
     return (
       <div>
-        <TabsHeader role={accessLevel.role} languageDictionary={languageDictionary}/>
+        <TabsHeader access={access} languageDictionary={languageDictionary}/>
         <LogDialog
           onClose={this.props.clearLog}
           error={log.error}

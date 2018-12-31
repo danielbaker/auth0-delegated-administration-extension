@@ -5,7 +5,7 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
-  record: { role: 0, memberships: [], createMemberships: false }
+  record: { role: 0, memberships: [], permissions: [], createMemberships: false }
 };
 
 describe('accessLevel reducer', () => {
@@ -26,7 +26,7 @@ describe('accessLevel reducer', () => {
       {
         loading: true,
         error: null,
-        record: { role: 0, memberships: [], createMemberships: false }
+        record: { role: 0, memberships: [], permissions: [], createMemberships: false }
       }
     );
   });
@@ -49,7 +49,7 @@ describe('accessLevel reducer', () => {
           type: 'TEST',
           status: 500
         },
-        record: { role: 2, memberships: [], createMemberships: false }
+        record: { role: 2, memberships: [], permissions: [], createMemberships: false }
       }
     );
   });

@@ -19,7 +19,7 @@ export default class UserActions extends Component {
     unblockUser: PropTypes.func.isRequired,
     removeBlockedIPs: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
-    role: PropTypes.number.isRequired,
+    access: PropTypes.object.isRequired,
     userFields: PropTypes.array.isRequired,
     languageDictionary: PropTypes.object
   }
@@ -293,7 +293,7 @@ export default class UserActions extends Component {
   }
 
   render() {
-    if (!this.state.user || this.props.role < 1) {
+    if (!this.state.user || !this.props.access.canManageUsers()) {
       return null;
     }
 

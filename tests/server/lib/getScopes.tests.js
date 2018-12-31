@@ -23,10 +23,14 @@ const admins = {
     'https://example.com/auth0-delegated-admin': {
       roles: constants.ADMIN_ROLE_NAME
     }
-  }
+  },
+  inviteRole: {
+    roles: [constants.ADMIN_ROLE_NAME, constants.INVITE_ROLE_NAME]
+  },
 };
 
 const adminScopes = [ constants.AUDITOR_PERMISSION, constants.USER_PERMISSION, constants.ADMIN_PERMISSION ];
+const adminInviteScopes = [...adminScopes, constants.INVITE_PERMISSION];
 
 
 describe('getScopes', () => {
@@ -44,6 +48,10 @@ describe('getScopes', () => {
 
   it('should get scopes from namespaces claims', () => {
     expect(getScopes(admins.claim)).to.eql(adminScopes);
+  });
+
+  it('should get invite scope from roles', () => {
+    expect(getScopes(admins.inviteRole)).to.eql(adminInviteScopes);
   });
 
   it('should get no scopes', () => {

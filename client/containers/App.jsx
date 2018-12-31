@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import permissions from '../utils/permissions';
 import { logout } from '../actions/auth';
 import { applicationActions, connectionActions, authActions } from '../actions';
 import { LoadingPanel } from 'auth0-extension-ui';
@@ -69,7 +70,7 @@ class App extends Component {
           getDictValue={this.getDictValue}
           onLogout={this.onLogout}
           onCssToggle={this.props.toggleStyleSettings}
-          accessLevel={this.props.accessLevel.toJSON()}
+          access={this.props.access}
           styleSettings={this.props.styleSettings}
           languageDictionary={languageDictionary}
           renderCssToggle={renderCssToggle}
@@ -80,7 +81,7 @@ class App extends Component {
               <div className="col-xs-12">
                 <div id="content-area" className="tab-content">
                   {React.cloneElement(this.props.children, {
-                    accessLevel: this.props.accessLevel.toJSON(),
+                    access: this.props.access,
                     appSettings: this.props.settings.toJSON(),
                     getDictValue: this.getDictValue
                   })}
@@ -98,7 +99,7 @@ function select(state) {
   return {
     issuer: state.auth.get('issuer'),
     user: state.auth.get('user'),
-    accessLevel: state.accessLevel.get('record'),
+    access: permissions(state.accessLevel),
     settings: state.settings.get('record'),
     styleSettings: state.styleSettings,
     settingsLoading: state.settings.get('loading'),

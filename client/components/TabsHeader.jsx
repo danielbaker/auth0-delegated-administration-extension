@@ -4,25 +4,24 @@ import { TabPane } from 'auth0-extension-ui';
 
 export default class TabsHeader extends Component {
   static propTypes = {
-    role: PropTypes.number,
+    access: PropTypes.object,
     languageDictionary: PropTypes.object
   };
 
   render() {
-    const isRoot = this.props.role === 2;
-
     const languageDictionary = this.props.languageDictionary || {};
 
     return (
       <div className="widget-title title-with-nav-bars">
         <ul className="nav nav-tabs">
           <TabPane
-            title={languageDictionary.userUsersTabTitle || "Users"}
+            title={languageDictionary.userUsersTabTitle || 'Users'}
             route="users" />
-          {isRoot ?
+          {this.props.access.canAccessLogs() && (
             <TabPane
-              title={languageDictionary.userLogsTabTitle || "Logs"}
-              route="logs" /> : null}
+              title={languageDictionary.userLogsTabTitle || 'Logs'}
+              route="logs" />
+          )}
         </ul>
       </div>
     );

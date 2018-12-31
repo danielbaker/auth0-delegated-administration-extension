@@ -9,6 +9,7 @@ import fakeStore from '../../utils/fakeStore';
 
 import App from '../../../client/containers/App';
 import Header from '../../../client/components/Header';
+import {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../client/utils/permissions';
 
 let wrapper = undefined;
 const wrapperMount = (...args) => (wrapper = mount(...args));
@@ -17,7 +18,7 @@ describe('#Client-Containers-App', () => {
 
   const renderComponent = (languageDictionary) => {
     const initialState = {
-      accessLevel: fromJS({ record: { role: 1 } }),
+      accessLevel: fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] } }),
       auth: fromJS({
         user: {},
         issuer: 'auth0'

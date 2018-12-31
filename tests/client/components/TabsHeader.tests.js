@@ -2,16 +2,18 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
+import { fromJS } from 'immutable';
 
 import { TabPane } from 'auth0-extension-ui';
 import TabsHeader from '../../../client/components/TabsHeader';
+import permissions, { ADMIN_PERMISSION, USER_PERMISSION } from '../../../client/utils/permissions';
 
 describe('#Client-Components-TabsHeader', () => {
-  const renderComponent = (role, languageDictionary) => {
+  const renderComponent = (perms, languageDictionary) => {
 
     return shallow(
       <TabsHeader
-        role={role}
+        access={permissions(fromJS({ record: { permissions: perms }}))}
         languageDictionary={languageDictionary}
       />
     );
@@ -29,14 +31,14 @@ describe('#Client-Components-TabsHeader', () => {
   };
 
   it('should render admin', () => {
-    const component = renderComponent(2);
+    const component = renderComponent([ ADMIN_PERMISSION ]);
 
     expect(component.length).to.be.greaterThan(0);
     checkPanes(component, 'Users', 'Logs');
   });
 
   it('should render non-admin', () => {
-    const component = renderComponent(1);
+    const component = renderComponent([ USER_PERMISSION ]);
 
     expect(component.length).to.be.greaterThan(0);
 
@@ -44,7 +46,7 @@ describe('#Client-Components-TabsHeader', () => {
   });
 
   it('should render tab names from languageDictionary for admin', () => {
-    const component = renderComponent(2, {
+    const component = renderComponent([ ADMIN_PERMISSION ], {
       userUsersTabTitle: 'Users Title',
       userLogsTabTitle: 'Logs Title'
     });
@@ -55,7 +57,7 @@ describe('#Client-Components-TabsHeader', () => {
   });
 
   it('should render tab names from languageDictionary for non-admin', () => {
-    const component = renderComponent(1, {
+    const component = renderComponent([ USER_PERMISSION ], {
       userUsersTabTitle: 'Users Title',
       userLogsTabTitle: 'Logs Title'
     });

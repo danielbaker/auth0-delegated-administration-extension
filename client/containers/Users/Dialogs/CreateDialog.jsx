@@ -4,6 +4,7 @@ import connectContainer from 'redux-static';
 import { Error } from 'auth0-extension-ui';
 import { Modal } from 'react-bootstrap';
 
+import permissions from "../../../utils/permissions";
 import { userActions, scriptActions } from '../../../actions';
 import { UserForm, ValidationError } from '../../../components/Users';
 import getErrorMessage from '../../../utils/getErrorMessage';
@@ -11,7 +12,7 @@ import getErrorMessage from '../../../utils/getErrorMessage';
 export default connectContainer(class extends Component {
   static stateToProps = (state) => ({
     userCreate: state.userCreate,
-    accessLevel: state.accessLevel,
+    access: permissions(state.accessLevel),
     connections: state.connections,
     languageDictionary: state.languageDictionary,
     userForm: state.form
@@ -23,7 +24,7 @@ export default connectContainer(class extends Component {
   }
 
   static propTypes = {
-    accessLevel: PropTypes.object.isRequired,
+    access: PropTypes.object.isRequired,
     connections: PropTypes.object.isRequired,
     userCreate: PropTypes.object.isRequired,
     userForm: PropTypes.object.isRequired,
@@ -39,7 +40,7 @@ export default connectContainer(class extends Component {
     return nextProps.userCreate !== this.props.userCreate ||
       nextProps.languageDictionary !== this.props.languageDictionary ||
       nextProps.connections !== this.props.connections ||
-      nextProps.accessLevel !== this.props.accessLevel ||
+      nextProps.access !== this.props.access ||
       nextProps.userFields !== this.props.userFields;
   }
 
@@ -51,7 +52,6 @@ export default connectContainer(class extends Component {
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
-    const accessLevel = this.props.accessLevel.get('record').toJS();
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
 
     return (
@@ -64,8 +64,8 @@ export default connectContainer(class extends Component {
           customFields={this.props.userFields || []}
           customFieldGetter={field => field.create}
           connections={connections.records} initialValues={record}
-          createMemberships={accessLevel.createMemberships}
-          memberships={accessLevel.memberships}
+          createMemberships={this.props.access.canCreateMemberships()}
+          memberships={this.props.access.memberships()}
           getDictValue={this.props.getDictValue}
           onClose={this.props.cancelCreateUser}
           onSubmit={this.onSubmit}

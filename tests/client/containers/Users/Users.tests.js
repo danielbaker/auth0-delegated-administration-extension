@@ -8,6 +8,7 @@ import { Router, Route, createMemoryHistory } from 'react-router';
 
 import fakeStore from '../../../utils/fakeStore';
 
+import {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../../client/utils/permissions';
 import Users from '../../../../client/containers/Users/Users';
 import TabsHeader from '../../../../client/components/TabsHeader';
 import UserOverview from '../../../../client/components/Users/UserOverview';
@@ -30,7 +31,7 @@ describe('#Client-Containers-Users-Users', () => {
   const renderComponent = (languageDictionary) => {
     const initialState = {
       connections: fromJS({ records: [{name: 'connA'}]}),
-      accessLevel: fromJS({ record: { role: 1 } }),
+      accessLevel: fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] } }),
       users: fromJS({
         loading: false,
         error: null,

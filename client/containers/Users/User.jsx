@@ -33,7 +33,7 @@ export default connectContainer(class extends Component {
 
   static propTypes = {
     languageDictionary: PropTypes.object.isRequired,
-    accessLevel: PropTypes.object.isRequired,
+    access: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     user: PropTypes.object,
     log: PropTypes.object,
@@ -66,19 +66,19 @@ export default connectContainer(class extends Component {
     const userFields = (settings && settings.userFields) || [];
     const allowedUserFields = userFields.filter(field => field.property !== 'picture' && field.property !== 'client');
     const suppressRawData = settings && settings.suppressRawData === true;
-    const role = this.props.accessLevel.role;
+    const access = this.props.access;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userTitle || 'User Details'} - ${originalTitle}`;
 
     return (
       <div className="user">
-        <TabsHeader role={role} languageDictionary={languageDictionary} />
+        <TabsHeader access={access} languageDictionary={languageDictionary} />
         <div className="row content-header">
           <div className="col-xs-12">
             <h1 className="pull-left">{languageDictionary.userTitle || 'User Details'}</h1>
             <div className="pull-right">
               <UserActions
-                role={role}
+                access={access}
                 user={user}
                 userFields={allowedUserFields}
                 databaseConnections={databaseConnections}

@@ -8,6 +8,7 @@ import { fromJS } from 'immutable';
 import fakeStore from '../../utils/fakeStore';
 
 import Login from '../../../client/containers/Login';
+import {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../client/utils/permissions';
 import { Confirm } from 'auth0-extension-ui';
 
 let wrapper = undefined;
@@ -17,7 +18,7 @@ describe('#Client-Containers-Login', () => {
 
   const renderComponent = (error, languageDictionary) => {
     const initialState = {
-      accessLevel: fromJS({ record: { role: 1 } }),
+      accessLevel: fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] } }),
       auth: fromJS({
         isAuthenticated: false,
         isAuthenticating: true,

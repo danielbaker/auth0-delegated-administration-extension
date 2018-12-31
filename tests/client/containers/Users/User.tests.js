@@ -8,6 +8,7 @@ import { Router, Route, createMemoryHistory } from 'react-router';
 
 import fakeStore from '../../../utils/fakeStore';
 
+import permissions, {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../../client/utils/permissions';
 import User from '../../../../client/containers/Users/User';
 import TabsHeader from '../../../../client/components/TabsHeader';
 import LogDialog from '../../../../client/components/Logs/LogDialog';
@@ -25,7 +26,7 @@ const wrapperMount = (...args) => (wrapper = mount(...args));
 class UserWrapper extends Component {
   render() {
     return <User
-      accessLevel={{ role: 1 }}
+      access={permissions(fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] }}))}
       params={{ id: 1 }}
       getDictValue={() => null}
       userDelete={() => null}
@@ -55,7 +56,7 @@ describe('#Client-Containers-Users-User', () => {
       applications: fromJS({ records: []}),
       connections: fromJS({ records: []}),
       fieldsChange: fromJS({}),
-      accessLevel: { role: 1 },
+      accessLevel: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] },
       user: fromJS({
         loading: false,
         error: null,
