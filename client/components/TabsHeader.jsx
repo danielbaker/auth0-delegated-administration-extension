@@ -16,11 +16,19 @@ export default class TabsHeader extends Component {
         <ul className="nav nav-tabs">
           <TabPane
             title={languageDictionary.userUsersTabTitle || 'Users'}
-            route="users" />
+            route="users"
+          />
+          {this.props.access.canViewInvitedUsers() && (
+            <TabPane
+              title={languageDictionary.userLogsTabTitle || 'Invites'}
+              route="invites"
+            />
+          )}
           {this.props.access.canAccessLogs() && (
             <TabPane
               title={languageDictionary.userLogsTabTitle || 'Logs'}
-              route="logs" />
+              route="logs"
+            />
           )}
         </ul>
       </div>

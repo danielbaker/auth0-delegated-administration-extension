@@ -29,6 +29,7 @@ export default connectContainer(class extends Component {
     userCreate: PropTypes.object.isRequired,
     userForm: PropTypes.object.isRequired,
     createUser: PropTypes.func.isRequired,
+    inviteUser: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     cancelCreateUser: PropTypes.func.isRequired,
     userFields: PropTypes.array.isRequired,
@@ -45,19 +46,29 @@ export default connectContainer(class extends Component {
   }
 
   onSubmit = (user) => {
+    const { record: { isInvite } } = this.props.userCreate.toJS();
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
-    this.props.createUser(user, languageDictionary);
+    if (isInvite) {
+      this.props.inviteUser(user, languageDictionary);
+    } else {
+      this.props.createUser(user, languageDictionary);
+    }
   };
 
   render() {
     const { error, loading, record } = this.props.userCreate.toJS();
     const connections = this.props.connections.toJS();
     const languageDictionary = this.props.languageDictionary.get('record').toJS();
+    const isInvite = (record || {}).isInvite;
 
     return (
       <Modal show={record !== null} className="modal-overflow-visible" onHide={this.props.cancelCreateUser}>
         <Modal.Header closeButton={!loading} className="has-border" closeLabel={languageDictionary.closeButtonText} >
-          <Modal.Title>{languageDictionary.createDialogTitle || 'Create User'}</Modal.Title>
+          <Modal.Title>{
+            isInvite ?
+              (languageDictionary.inviteDialogTitle || 'Invite User') :
+              (languageDictionary.createDialogTitle || 'Create User')
+          }</Modal.Title>
         </Modal.Header>
 
         <UserForm
@@ -71,6 +82,7 @@ export default connectContainer(class extends Component {
           onSubmit={this.onSubmit}
           loading={loading}
           languageDictionary={languageDictionary}
+          isInvite={isInvite}
         >
           <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, error, this.props.errorTranslator)} />
           <ValidationError

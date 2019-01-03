@@ -2,9 +2,12 @@ import Promise from 'bluebird';
 import safeEval from 'safe-eval';
 import memoizer from 'lru-memoizer';
 import { ArgumentError } from 'auth0-extension-tools';
+import Liquid from 'liquid-node';
 
 import logger from './logger';
 import parseScriptError from './errors/parseScriptError';
+import * as defaultScripts from './default-scripts';
+const liquidEngine = new Liquid.Engine();
 
 export default class ScriptManager {
   constructor(storage, cacheAge = 1000 * 10) {
@@ -40,6 +43,15 @@ export default class ScriptManager {
         }
 
         return data.scripts[name];
+      })
+      .then((data) => {
+        if (data) return data;
+
+        if (defaultScripts[name]) {
+          return defaultScripts[name].toString();
+        }
+
+        return null;
       });
   }
 
@@ -114,6 +126,22 @@ export default class ScriptManager {
             reject(parseScriptError(err, name));
           }
         });
+      });
+  }
+
+  loadTemplate(name, ctx) {
+    return this.getCached(name)
+      .then((script) => {
+        if (!script) {
+          return null;
+        }
+
+        logger.debug(`Loading Delegated Admin template: ${name}`);
+        return liquidEngine.parseAndRender(script, ctx)
+          .catch((error) => {
+            logger.error(`Failed to parse Delegated Admin template (${name}): "${error}"`);
+            throw error;
+          });
       });
   }
 }

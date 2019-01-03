@@ -24,6 +24,7 @@ class AddUserForm extends Component {
     customFieldGetter: PropTypes.func.isRequired,
     languageDictionary: PropTypes.object,
     loading: PropTypes.bool,
+    isInvite: PropTypes.bool
   };
 
 
@@ -40,14 +41,15 @@ class AddUserForm extends Component {
       createMemberships,
       getDictValue,
       loading,
+      isInvite,
     } = this.props;
-     
+
     const languageDictionary = this.props.languageDictionary || {};
 
     /* First let's add field to the top if not in the list of fields */
     const fields = _.cloneDeep(customFields) || [];
     useDefaultFields.useConnectionsField(false, fields, connections, this.onConnectionsChange);
-    useDefaultFields.usePasswordFields(false, fields);
+    if (!isInvite) useDefaultFields.usePasswordFields(false, fields);
     useDefaultFields.useUsernameField(false, fields, connections, hasSelectedConnection, initialValues);
     useDefaultFields.useEmailField(false, fields);
     useDefaultFields.useMembershipsField(false, fields, hasMembership, memberships, createMemberships, getDictValue);
@@ -67,7 +69,11 @@ class AddUserForm extends Component {
             {languageDictionary.cancelButtonText || 'Cancel'}
           </Button>
           <Button bsSize="large" bsStyle="primary" disabled={loading} onClick={this.props.handleSubmit}>
-           {loading ? languageDictionary.savingText || 'Saving....' : languageDictionary.createButtonText || 'Create'}
+           {loading ?
+             (languageDictionary.savingText || 'Saving....') :
+             (isInvite ?
+               (languageDictionary.inviteButtonText || 'Invite') :
+               (languageDictionary.createButtonText || 'Create'))}
           </Button>
         </Modal.Footer>
       </div>

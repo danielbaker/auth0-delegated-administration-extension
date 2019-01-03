@@ -23,19 +23,19 @@ export const getName = (user, fields, languageDictionary) => {
   return user && (user.name || user.user_name || user.email);
 };
 
-export const getValueForType = (type, user, field, languageDictionary = {}, additionalData = {}) => {
+export const getValueForType = (type, row, field, languageDictionary = {}, additionalData = {}) => {
   const mergedField = _.assign({}, field, field[type]);
-  return getValue(user, mergedField, languageDictionary, additionalData);
+  return getValue(row, mergedField, languageDictionary, additionalData);
 };
 
-export const getValue = (user, field, languageDictionary = {}, additionalData = {}) => {
-  if (!user || user.size === 0) {
+export const getValue = (row, field, languageDictionary = {}, additionalData = {}) => {
+  if (!row || row.size === 0) {
     return null;
   }
 
   if (_.isFunction(field.display)) {
     try {
-      return field.display(user, _.at(user, field.property), languageDictionary, additionalData);
+      return field.display(row, _.at(row, field.property), languageDictionary, additionalData);
     } catch (e) {
       /* Swallow eval errors */
       console.log(`Could not display ${field.property} because: ${e.message}`);
@@ -43,7 +43,7 @@ export const getValue = (user, field, languageDictionary = {}, additionalData = 
     }
   }
 
-  let value = getProperty(user, field.property);
+  let value = getProperty(row, field.property);
   if (value === undefined) return null;
 
   if (field.type && field.type === 'elapsedTime') {

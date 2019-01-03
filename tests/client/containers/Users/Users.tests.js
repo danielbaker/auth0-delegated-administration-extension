@@ -11,7 +11,7 @@ import fakeStore from '../../../utils/fakeStore';
 import {AUDITOR_PERMISSION, USER_PERMISSION} from '../../../../client/utils/permissions';
 import Users from '../../../../client/containers/Users/Users';
 import TabsHeader from '../../../../client/components/TabsHeader';
-import UserOverview from '../../../../client/components/Users/UserOverview';
+import TableOverview from '../../../../client/components/Users/TableOverview';
 
 // import { Pagination, TableTotals } from 'auth0-extension-ui';
 
@@ -82,7 +82,7 @@ describe('#Client-Containers-Users-Users', () => {
   };
 
   const checkAllComponentsForLanguageDictionary = (component, languageDictionary) => {
-    checkForLanguageDictionary(component, UserOverview, languageDictionary);
+    checkForLanguageDictionary(component, TableOverview, languageDictionary);
     checkForLanguageDictionary(component, TabsHeader, languageDictionary);
   };
 

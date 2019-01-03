@@ -72,16 +72,74 @@ export function createUser(user, languageDictionary) {
 }
 
 /*
+ * Search for invites.
+ */
+export function fetchInvites(search, reset = false, page = 0, filterBy, sort, onSuccess) {
+  return (dispatch, getState) => {
+    const { sortProperty, sortOrder, searchValue, selectedFilter } = getState().invites.toJS();
+    const meta = { page, sortProperty, sortOrder, searchValue, onSuccess };
+    meta.selectedFilter = reset ? '' : filterBy || selectedFilter;
+    meta.searchValue = reset ? '' : search || searchValue;
+    if (sort) {
+      meta.sortProperty = sort.property;
+      meta.sortOrder = sort.order;
+    }
+
+    dispatch({
+      type: constants.FETCH_INVITES,
+      payload: {
+        promise: axios.get('/api/invites', {
+          params: {
+            search: meta.searchValue,
+            page,
+            filterBy: meta.selectedFilter,
+            sortOrder: meta.sortOrder,
+            sortProperty: meta.sortProperty
+          },
+          responseType: 'json'
+        })
+      },
+      meta
+    });
+  };
+}
+
+/*
+ * Invite a user.
+ */
+export function inviteUser(user, languageDictionary) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.CREATE_USER,
+      meta: {
+        user,
+        onSuccess: () => {
+          // Give indexing some time when we reload users.
+          setTimeout(() => dispatch(fetchUsers()), 1000);
+          dispatch(getAccessLevel());
+        }
+      },
+      payload: {
+        promise: axios.post(addRequiredTextParam('/api/invites/', languageDictionary), user, {
+          responseType: 'json'
+        })
+      }
+    });
+  };
+}
+
+/*
  * Show dialog to create a user.
  */
-export function requestCreateUser(memberships) {
+export function requestCreateUser(memberships, isInvite) {
   return (dispatch, getState) => {
     const connections = getState().connections.get('records').toJS();
     dispatch({
       type: constants.REQUEST_CREATE_USER,
       payload: {
         connection: connections && connections.length && connections[0].name,
-        memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ]
+        memberships: memberships && memberships.length === 1 ? [ memberships[0] ] : [ ],
+        isInvite,
       }
     });
   };

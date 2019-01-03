@@ -10,22 +10,20 @@ import permissions from '../../utils/permissions';
 import * as dialogs from './Dialogs';
 import TabsHeader from '../../components/TabsHeader';
 import TableOverview from '../../components/Users/TableOverview';
-import { GetUserFields } from '../../components/Users/Table';
+import { GetInviteFields } from '../../components/Users/Table';
 
-import './Users.styles.css';
-
-class Users extends Component {
+class Invites extends Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
     error: PropTypes.string,
-    users: PropTypes.array,
+    invites: PropTypes.array,
     connections: PropTypes.array,
     userCreateError: PropTypes.string,
     userCreateLoading: PropTypes.bool,
     validationErrors: PropTypes.object,
     access: PropTypes.object,
     total: PropTypes.number,
-    fetchUsers: PropTypes.func.isRequired,
+    fetchInvites: PropTypes.func.isRequired,
     getDictValue: PropTypes.func.isRequired,
     fetchConnections: PropTypes.func.isRequired,
     requestCreateUser: PropTypes.func.isRequired,
@@ -44,42 +42,40 @@ class Users extends Component {
   }
 
   componentWillMount = () => {
-    this.props.fetchUsers();
+    this.props.fetchInvites();
     this.props.fetchConnections();
   };
 
   onPageChange = (page) => {
-    this.props.fetchUsers('', false, page - 1);
+    this.props.fetchInvites('', false, page - 1);
   };
 
   onSearch = (query, filterBy, onSuccess) => {
     if (query && query.length > 0) {
-      this.props.fetchUsers(query, false, 0, filterBy, null, onSuccess);
+      this.props.fetchInvites(query, false, 0, filterBy, null, onSuccess);
     }
   };
 
   onReset = () => {
-    this.props.fetchUsers('', true);
+    this.props.fetchInvites('', true);
   };
 
   onColumnSort = (sort) => {
-    this.props.fetchUsers('', false, 0, null, sort);
+    this.props.fetchInvites('', false, 0, null, sort);
   };
 
-  createUser = (isInvite) => {
-    return () => {
-      this.props.requestCreateUser(
-        this.props.access.memberships(),
-        isInvite
-      );
-    };
+  createInvite = () => {
+    this.props.requestCreateUser(
+      this.props.access.memberships(),
+      true
+    );
   };
 
   render() {
     const {
       loading,
       error,
-      users,
+      invites,
       total,
       connections,
       access,
@@ -94,7 +90,7 @@ class Users extends Component {
 
     const userFields = (settings && settings.userFields) || [];
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
-    document.title = `${languageDictionary.userUsersTabTitle || 'Users'} - ${originalTitle}`;
+    document.title = `${languageDictionary.userInvitesTabTitle || 'Invites'} - ${originalTitle}`;
 
     return (
       <div className="users">
@@ -103,15 +99,9 @@ class Users extends Component {
           access={access} />
         <div className="row content-header">
           <div className="col-xs-12 user-table-content">
-            <h1>{languageDictionary.usersTitle || 'Users'}</h1>
-            {(connections.length && access.canCreateUsers()) ?
-              <button id="create-user-button" className="btn btn-success pull-right new" onClick={this.createUser(false)}>
-                <i className="icon-budicon-473"></i>
-                {languageDictionary.createUserButtonText || 'Create User'}
-              </button>
-              : ''}
+            <h1>{languageDictionary.invitesTitle || 'Invites'}</h1>
             {connections.length && access.canInviteUsers() ?
-              <button id="invite-user-button" className="btn btn-default pull-right new" onClick={this.createUser(true)}>
+              <button id="invite-user-button" className="btn btn-default pull-right new" onClick={this.createInvite}>
                 <i className="icon-budicon-473"></i>
                 {languageDictionary.inviteUserButtonText || 'Invite User'}
               </button>
@@ -124,7 +114,7 @@ class Users extends Component {
           onSearch={this.onSearch}
           onPageChange={this.onPageChange}
           error={error}
-          rows={users}
+          rows={invites}
           total={total}
           nextPage={nextPage}
           pages={pages}
@@ -136,7 +126,7 @@ class Users extends Component {
           onColumnSort={this.onColumnSort}
           settings={settings}
           languageDictionary={languageDictionary}
-          tableFields={GetUserFields(userFields)}
+          tableFields={GetInviteFields(userFields)}
         />
         <div className="row">
           <div className="col-xs-12">
@@ -147,7 +137,7 @@ class Users extends Component {
                 perPage={10}
                 textFormat={languageDictionary.paginationTextFormat}
               /> :
-              <TableTotals currentCount={users.length} totalCount={total} textFormat={languageDictionary.tableTotalsTextFormat} />
+              <TableTotals currentCount={invites.length} totalCount={total} textFormat={languageDictionary.tableTotalsTextFormat} />
             }
           </div>
         </div>
@@ -159,24 +149,24 @@ class Users extends Component {
 function mapStateToProps(state) {
   return {
     access: permissions(state.accessLevel),
-    error: state.users.get('error'),
+    error: state.invites.get('error'),
     userCreateError: state.userCreate.get('error'),
     userCreateLoading: state.userCreate.get('loading'),
     validationErrors: state.userCreate.get('validationErrors'),
-    loading: state.users.get('loading'),
-    users: state.users.get('records').toJS(),
+    loading: state.invites.get('loading'),
+    invites: state.invites.get('records').toJS(),
     connections: state.connections.get('records').toJS(),
-    total: state.users.get('total'),
-    nextPage: state.users.get('nextPage'),
-    pages: state.users.get('pages'),
-    sortProperty: state.users.get('sortProperty'),
-    sortOrder: state.users.get('sortOrder'),
-    searchValue: state.users.get('searchValue'),
+    total: state.invites.get('total'),
+    nextPage: state.invites.get('nextPage'),
+    pages: state.invites.get('pages'),
+    sortProperty: state.invites.get('sortProperty'),
+    sortOrder: state.invites.get('sortOrder'),
+    searchValue: state.invites.get('searchValue'),
     settings: (state.settings.get('record') && state.settings.get('record').toJS().settings) || {},
     languageDictionary: state.languageDictionary.get('record').toJS()
   };
 }
 
-const UsersContainer = connect(mapStateToProps, { ...connectionActions, ...userActions })(Users);
+const InvitesContainer = connect(mapStateToProps, { ...connectionActions, ...userActions })(Invites);
 
-export default UsersContainer;
+export default InvitesContainer;

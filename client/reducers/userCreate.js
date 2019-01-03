@@ -16,7 +16,8 @@ export const userCreate = createReducer(fromJS(initialState), { // eslint-disabl
       ...initialState,
       record: {
         memberships: action.payload.memberships,
-        connection: action.payload.connection
+        connection: action.payload.connection,
+        isInvite: action.payload.isInvite
       }
     }),
   [constants.CANCEL_CREATE_USER]: (state) =>

@@ -8,6 +8,7 @@ import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
 
 import ScriptManager from '../lib/scriptmanager';
+import Emailer from '../lib/emailer';
 import getScopes from '../lib/getScopes';
 import * as constants from '../constants';
 
@@ -17,14 +18,23 @@ import scripts from './scripts';
 import me from './me';
 import logs from './logs';
 import users from './users';
+import invites from './invites';
 
 export default (storage) => {
   const scriptManager = new ScriptManager(storage);
-  const managementApiClient = middlewares.managementApiClient({
+  const managementApiClientMiddlerware = middlewares.managementApiClient({
     domain: config('AUTH0_ISSUER_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
     clientSecret: config('AUTH0_CLIENT_SECRET')
   });
+
+  const managementApiClient = tools.managementApi.getClient({
+    domain: config('AUTH0_ISSUER_DOMAIN'),
+    clientId: config('AUTH0_CLIENT_ID'),
+    clientSecret: config('AUTH0_CLIENT_SECRET')
+  });
+
+  const emailer = new Emailer(managementApiClient);
 
   const api = Router();
 
@@ -46,12 +56,7 @@ export default (storage) => {
 
     if (!token) console.error('no token found');
 
-    const promise = tools.managementApi.getClient({
-      domain: config('AUTH0_ISSUER_DOMAIN'),
-      clientId: config('AUTH0_CLIENT_ID'),
-      clientSecret: config('AUTH0_CLIENT_SECRET')
-    })
-      .then(auth0 =>
+    const promise = managementApiClient.then(auth0 =>
         auth0.users.get({ id: user.sub })
           .then(userData => {
             _.assign(user, userData);
@@ -114,11 +119,12 @@ export default (storage) => {
     const permission = (req.method.toLowerCase() === 'get') ? constants.AUDITOR_PERMISSION : constants.USER_PERMISSION;
     return requireScope(permission)(req, res, next);
   });
-  api.use('/applications', managementApiClient, applications());
-  api.use('/connections', managementApiClient, connections(scriptManager));
+  api.use('/applications', managementApiClientMiddlerware, applications());
+  api.use('/connections', managementApiClientMiddlerware, connections(scriptManager));
   api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
-  api.use('/users', managementApiClient, users(storage, scriptManager));
-  api.use('/logs', managementApiClient, logs(scriptManager));
+  api.use('/users', managementApiClientMiddlerware, users(storage, scriptManager));
+  api.use('/invites', invites(emailer, scriptManager));
+  api.use('/logs', managementApiClientMiddlerware, logs(scriptManager));
   api.use('/me', me(scriptManager));
   api.get('/settings', (req, res, next) => {
     const settingsContext = {

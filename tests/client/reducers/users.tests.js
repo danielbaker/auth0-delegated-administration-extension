@@ -149,6 +149,7 @@ describe('users reducer', () => {
         error: null,
         records: [
           {
+            id: 1,
             user_id: 1,
             name: 'test',
             blocked: false,
@@ -158,6 +159,7 @@ describe('users reducer', () => {
             last_login_relative: moment('2016-09-27T10:54:48.864Z').fromNow()
           },
           {
+            id: 2,
             user_id: 2,
             name: 'test_2',
             blocked: false,

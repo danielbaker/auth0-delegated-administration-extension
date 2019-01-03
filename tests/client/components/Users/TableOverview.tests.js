@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
-import UserOverview from '../../../../client/components/Users/UserOverview';
+import TableOverview from '../../../../client/components/Users/TableOverview';
+import Table from '../../../../client/components/Users/Table';
 import LuceneSearchBar from '../../../../client/components/Users/LuceneSearchBar';
-import UsersTable from '../../../../client/components/Users/UsersTable';
 
-describe('#Client-Components-UserOverview', () => {
+describe('#Client-Components-TableOverview', () => {
   const renderComponent = (languageDictionary) => {
     return shallow(
-      <UserOverview
+      <TableOverview
         loading={false}
         error={null}
         onReset={() => 'onReset'}
@@ -48,7 +48,7 @@ describe('#Client-Components-UserOverview', () => {
     expect(searchBar.length).to.equal(1);
     expect(searchBar.prop('languageDictionary')).to.deep.equal(languageDictionary);
 
-    const usersTable = component.find(UsersTable);
+    const usersTable = component.find(Table);
     expect(usersTable.length).to.equal(1);
     expect(usersTable.prop('languageDictionary')).to.deep.equal(languageDictionary);
   });

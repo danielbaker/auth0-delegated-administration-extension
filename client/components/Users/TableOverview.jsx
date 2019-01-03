@@ -4,26 +4,27 @@ import { findDOMNode } from 'react-dom';
 import _ from 'lodash';
 import { Error, LoadingPanel, TableTotals, SearchBar } from 'auth0-extension-ui';
 
-import { LuceneSearchBar, UsersTable } from './';
+import { LuceneSearchBar, Table } from './';
 import getErrorMessage from '../../utils/getErrorMessage';
-import './UserOverview.styles.css';
+import './TableOverview.styles.css';
 
-export default class UserOverview extends React.Component {
+export default class TableOverview extends React.Component {
   static propTypes = {
     onReset: PropTypes.func.isRequired,
     onSearch: PropTypes.func.isRequired,
     onPageChange: PropTypes.func.isRequired,
     error: PropTypes.object,
-    users: PropTypes.array.isRequired,
+    rows: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     userFields: PropTypes.array.isRequired,
+    tableFields: PropTypes.array.isRequired,
     onColumnSort: PropTypes.func.isRequired,
     sortOrder: PropTypes.number.isRequired,
     searchValue: PropTypes.string,
     sortProperty: PropTypes.string.isRequired,
     settings: PropTypes.object.isRequired,
     languageDictionary: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -134,10 +135,15 @@ export default class UserOverview extends React.Component {
         <LoadingPanel show={loading}>
           <div className="row">
             <div className="col-xs-12" ref="searchResults">
-              <UsersTable loading={loading} users={this.props.users}
-                          userFields={this.props.userFields} onColumnSort={this.props.onColumnSort}
-                          sortOrder={sortOrder} sortProperty={sortProperty}
-                          languageDictionary={languageDictionary}/>
+              <Table
+                loading={loading}
+                rows={this.props.rows}
+                fields={this.props.tableFields}
+                onColumnSort={this.props.onColumnSort}
+                sortOrder={sortOrder}
+                sortProperty={sortProperty}
+                languageDictionary={languageDictionary}
+              />
             </div>
           </div>
         </LoadingPanel>

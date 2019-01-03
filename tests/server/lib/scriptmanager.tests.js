@@ -22,7 +22,8 @@ describe('#scripts', () => {
         // executing
         create: '', // for writing
         memberships: 'function (ctx, callback) { callback(new Error("MembershipsError")); }', // for error return
-        settings: 'function (ctx, callback) { console.log(ctx.user.name); callback(); }' // for error catch
+        settings: 'function (ctx, callback) { console.log(ctx.user.name); callback(); }', // for error catch
+        invitation_email: '<h1>Hi {{ name }}</h1>'
       }
     };
     scriptmanager = new ScriptManager(storage);
@@ -101,6 +102,26 @@ describe('#scripts', () => {
       });
     });
 
+    it('should return default script if trying to get nonexistent script that has default', (done) => {
+      data = {};
+
+      scriptmanager.get('invites').then(result => {
+        expect(result).toNotEqual(null);
+        done();
+      });
+    });
+
+    it('should return custom script if trying to get script that has default', (done) => {
+      data = {};
+
+      scriptmanager.save('invites', 'The invite script').then(() => {
+        scriptmanager.get('invites').then(result => {
+          expect(result).toEqual('The invite script');
+          done();
+        });
+      });
+    });
+
     it('should support reading custom data', (done) => {
       data.scripts.customRead = `function readHook(ctx, cb) {
           ctx.read()
@@ -167,6 +188,13 @@ describe('#scripts', () => {
         expect(manager).toEqual(null);
       }).toThrow(/Must provide a storage object/);
       done();
+    });
+
+    it('should support liquid syntax when loading templates', (done) => {
+      scriptmanager.loadTemplate('invitation_email', { name: 'phoebe' }).then((result) => {
+        expect(result).toEqual('<h1>Hi phoebe</h1>');
+        done();
+      });
     });
   });
 });

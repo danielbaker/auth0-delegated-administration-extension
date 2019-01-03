@@ -43,6 +43,7 @@ export const users = createReducer(fromJS(initialState), { // eslint-disable-lin
       selectedFilter: action.meta.selectedFilter,
       records: fromJS(data.users.map(user => ({
         ...user,
+        id: user.user_id,
         last_login_relative: user.last_login ? moment(user.last_login).fromNow() : 'Never'
       })))
     });

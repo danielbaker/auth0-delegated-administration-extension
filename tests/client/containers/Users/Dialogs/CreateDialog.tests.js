@@ -18,11 +18,11 @@ const wrapperMount = (...args) => (wrapper = mount(...args))
 
 describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
 
-  const renderComponent = (languageDictionary) => {
+  const renderComponent = (languageDictionary, isInvite) => {
     const initialState = {
       userCreate: fromJS({
         error: null,
-        record: { name: 'bill' },
+        record: { name: 'bill', isInvite },
         loading: false
       }),
       languageDictionary: fromJS({
@@ -63,6 +63,12 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
     const component = renderComponent();
 
     checkTitle(component, 'Create User');
+  });
+
+  it('should render invite mode', () => {
+    const component = renderComponent({}, true);
+
+    checkTitle(component, 'Invite User');
   });
 
   it('should render using language dictionary', () => {

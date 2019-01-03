@@ -24,6 +24,10 @@ class Permissions {
     return this.accessLevel.permissions.includes(USER_PERMISSION);
   }
 
+  canViewInvitedUsers() {
+    return this.accessLevel.permissions.includes(INVITE_PERMISSION);
+  }
+
   canInviteUsers() {
     return this.accessLevel.permissions.includes(INVITE_PERMISSION);
   }

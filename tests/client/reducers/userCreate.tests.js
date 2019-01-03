@@ -24,7 +24,8 @@ describe('User Create reducer', () => {
         type: constants.REQUEST_CREATE_USER,
         payload: {
           memberships: [ 'department_1', 'department_2' ],
-          connection: 'connection'
+          connection: 'connection',
+          isInvite: true
         }
       }).toJSON()
     ).toEqual(
@@ -32,7 +33,8 @@ describe('User Create reducer', () => {
         error: null,
         record: {
           memberships: [ 'department_1', 'department_2' ],
-          connection: 'connection'
+          connection: 'connection',
+          isInvite: true
         },
         loading: false,
         validationErrors: { }

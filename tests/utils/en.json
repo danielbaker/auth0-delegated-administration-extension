@@ -50,6 +50,7 @@
   "blockDialogTitle": "Block User?",
 
   "createDialogTitle": "Create User",
+  "inviteDialogTitle": "Invite User",
 
   "deleteDialogMessage": "Do you really want to delete {username}? This will completely remove the user and cannot be undone.",
   "deleteDialogTitle": "Delete User?",
@@ -83,6 +84,7 @@
   "userTitle": "User Details",
 
   "createUserButtonText": "Create User",
+  "inviteUserButtonText": "Invite User",
   "usersTitle": "Users",
 
   "loginErrorTitle": "Login Error",
