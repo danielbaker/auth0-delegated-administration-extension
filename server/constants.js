@@ -26,5 +26,6 @@ export const VALID_SCRIPTS = [
   'create',
   'memberships',
   'settings',
-  'invites'
+  'invites',
+  'invitationEmail'
 ];

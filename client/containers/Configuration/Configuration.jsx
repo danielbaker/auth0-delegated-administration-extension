@@ -68,6 +68,7 @@ export default connectContainer(class extends Component {
     this.props.fetchScript('memberships');
     this.props.fetchScript('settings');
     this.props.fetchScript('invites');
+    this.props.fetchScript('invitationEmail');
   };
 
   saveScript = (name) => () => {
@@ -204,6 +205,26 @@ export default connectContainer(class extends Component {
                   <div className="save-config">
                     <button onClick={this.saveScript('invites')} className="btn btn-success">
                       Save Invites Query
+                    </button>
+                  </div>
+                </LoadingPanel>
+              </Tab>
+              <Tab eventKey={7} title={code.invitationEmail && code.invitationEmail.length ? <span>Invitation Email</span> : <i>Invitation Email</i>}>
+                <LoadingPanel show={scripts.invitationEmail && scripts.invitationEmail.loading} animationStyle={{ paddingTop: '5px', paddingBottom: '5px' }}>
+                  <Error title={languageDictionary.errorTitle} message={getErrorMessage(languageDictionary, scripts.invitationEmail && scripts.invitationEmail.error)} />
+                  <p>
+                    With the <strong>invites query</strong> you provide an implementation to fetch existing user invites.
+                  </p>
+                  <Editor
+                    options={{
+                      mode: 'htmlmixed'
+                    }}
+                    value={code.invitationEmail || ''}
+                    onChange={this.onEditorChanged('invitationEmail')}
+                  />
+                  <div className="save-config">
+                    <button onClick={this.saveScript('invitationEmail')} className="btn btn-success">
+                      Save Invitation Email
                     </button>
                   </div>
                 </LoadingPanel>

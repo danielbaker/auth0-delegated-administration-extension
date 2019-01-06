@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import CodeMirror from 'react-codemirror';
 
 import 'codemirror';
+import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/lint/lint.css';
