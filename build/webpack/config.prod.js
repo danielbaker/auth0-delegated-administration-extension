@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const project = require('../../package.json');
 const logger = require('../../server/lib/logger');
@@ -12,45 +12,47 @@ const config = require('./config.base.js');
 config.profile = false;
 
 // Build output, which includes the hash.
-config.output.hash = true;
-config.output.filename = 'auth0-delegated-admin.ui.' + project.version + '.js';
+config.output.filename = '[name].ui.' + project.version + '.js';
 
 // Development modules.
-config.module.loaders.push({
+config.module.rules.push({
   test: /\.css$/,
-  loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
+  exclude: [/node_modules/],
+  use: [
+    MiniCssExtractPlugin.loader,
+    'css-loader',
+    'postcss-loader'
+  ],
 });
+
+config.module.rules.push({
+  test: /node_modules.*\.css$/,
+  use: [
+    'style-loader',
+    'css-loader',
+    'postcss-loader'
+  ],
+});
+
+config.optimization = {
+  splitChunks: {
+    cacheGroups: {
+      vendors: {
+        chunks: 'all',
+        enforce: true,
+        filename: 'auth0-delegated-admin.ui.vendors.' + project.version + '.js',
+        name: 'vendors',
+        test: /node_modules/
+      }
+    }
+  }
+};
 
 // Webpack plugins.
 config.plugins = config.plugins.concat([
-  new webpack.optimize.OccurenceOrderPlugin(true),
-  new webpack.optimize.DedupePlugin(),
-
   // Extract CSS to a different file, will require additional configuration.
-  new ExtractTextPlugin('auth0-delegated-admin.ui.' + project.version + '.css', {
-    allChunks: true
-  }),
-
-  // Separate the vender in a different file.
-  new webpack.optimize.CommonsChunkPlugin('vendors', 'auth0-delegated-admin.ui.vendors.' + project.version + '.js'),
-
-  // Compress and uglify the output.
-  new webpack.optimize.UglifyJsPlugin({
-    mangle: true,
-    output: {
-      comments: false
-    },
-    compress: {
-      sequences: true,
-      dead_code: true,
-      conditionals: true,
-      booleans: true,
-      unused: true,
-      if_return: true,
-      join_vars: true,
-      drop_console: true,
-      warnings: false
-    }
+  new MiniCssExtractPlugin({
+    filename: '[name].ui.' + project.version + '.css'
   }),
 
   // Alternative to StatsWriterPlugin.
@@ -58,9 +60,9 @@ config.plugins = config.plugins.concat([
     filename: 'manifest.json',
     transform: function transformData(data) {
       const chunks = {
-        app: data.assetsByChunkName.app[0],
-        style: data.assetsByChunkName.app[1],
-        vendors: data.assetsByChunkName.vendors[0]
+        app: data.assetsByChunkName['auth0-delegated-admin'][1],
+        style: data.assetsByChunkName['auth0-delegated-admin'][0],
+        vendors: data.assetsByChunkName.vendors
       };
       return JSON.stringify(chunks);
     }

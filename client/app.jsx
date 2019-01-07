@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+import '@babel/polyfill';
 import 'string.prototype.endswith';
 
 import axios from 'axios';

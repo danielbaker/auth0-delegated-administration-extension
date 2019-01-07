@@ -2,35 +2,11 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  devtool: 'cheap-module-source-map',
-  stats: false,
-  progress: true,
+  //devtool: 'cheap-module-source-map',
 
   // The application and the vendor libraries.
   entry: {
-    app: path.resolve(__dirname, '../../client/app.jsx'),
-    vendors: [
-      'axios',
-      'bluebird',
-      'classnames',
-      'history',
-      'immutable',
-      'jwt-decode',
-      'lodash',
-      'moment',
-      'react',
-      'react-bootstrap',
-      'react-dom',
-      'react-loader-advanced',
-      'react-router',
-      'react-redux',
-      'redux',
-      'redux-form',
-      'redux-thunk',
-      'redux-logger',
-      'redux-promise-middleware',
-      'redux-simple-router'
-    ]
+    'auth0-delegated-admin': path.resolve(__dirname, '../../client/app.jsx')
   },
 
   // Output directory.
@@ -42,37 +18,45 @@ module.exports = {
 
   // Module configuration.
   resolve: {
-    alias: {
-      React: require('react')
-    },
-    modulesDirectories: [
+    modules: [
       'node_modules'
     ],
-    extensions: [ '', '.json', '.js', '.jsx' ]
+    extensions: [ '.json', '.js', '.jsx' ]
   },
 
   // Load all modules.
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel',
-        exclude: path.join(__dirname, '../../node_modules/')
+        use: {
+          loader: 'babel-loader',
+        },
+        exclude: /node_modules/,
       },
       {
         test: /\.(png|ttf|svg|jpg|gif)/,
-        loader: 'url?limit=8192'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8192
+          }
+        }
       },
       {
         test: /\.(woff|woff2|eot)/,
-        loader: 'url?limit=100000'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 100000
+          }
+        }
       }
     ]
   },
 
   // Default plugins.
   plugins: [
-    new webpack.NoErrorsPlugin(),
     new webpack.ProvidePlugin({
       React: 'react',
       Promise: 'bluebird'
@@ -85,18 +69,6 @@ module.exports = {
       },
       __CLIENT__: JSON.stringify(true),
       __SERVER__: JSON.stringify(false)
-    })
-  ],
-
-  // Postcss configuration.
-  postcss: () => [
-    require('postcss-simple-vars')(),
-    require('postcss-focus')(),
-    require('autoprefixer')({
-      browsers: [ 'last 2 versions', 'IE > 8' ]
-    }),
-    require('postcss-reporter')({
-      clearMessages: true
     })
   ]
 };
