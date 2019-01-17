@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import { ArgumentError } from 'auth0-extension-tools';
 
-export default function(client, entity, opts = {}, perPage = 50, concurrency = 5) {
+export default async function(client, entity, opts = {}, perPage = 50, concurrency = 5) {
   if (client === null || client === undefined) {
     throw new ArgumentError('Must provide a auth0 client object.');
   }

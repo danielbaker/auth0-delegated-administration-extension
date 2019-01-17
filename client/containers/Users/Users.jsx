@@ -165,7 +165,7 @@ function mapStateToProps(state) {
     validationErrors: state.userCreate.get('validationErrors'),
     loading: state.users.get('loading'),
     users: state.users.get('records').toJS(),
-    connections: state.connections.get('records').toJS(),
+    connections: state.connections.get('records').get('dbConnections').toJS(),
     total: state.users.get('total'),
     nextPage: state.users.get('nextPage'),
     pages: state.users.get('pages'),

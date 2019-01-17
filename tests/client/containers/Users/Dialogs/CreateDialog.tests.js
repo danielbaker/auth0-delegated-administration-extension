@@ -31,7 +31,7 @@ describe('#Client-Containers-Users-Dialogs-CreateDialog', () => {
       accessLevel: fromJS({
         record: {}
       }),
-      connections: fromJS({ records: [{ name: 'connA' }] })
+      connections: fromJS({ records: { dbConnections: [{ name: 'connA' }] }})
     };
     return wrapperMount(
       <Provider store={fakeStore(initialState)}>

@@ -1,9 +1,9 @@
 import fs from 'fs';
-import url from 'url';
 import ejs from 'ejs';
 import path from 'path';
 import { urlHelpers } from 'auth0-extension-express-tools';
 
+import getLocale from '../lib/getLocale';
 import config from '../lib/config';
 
 export default () => {
@@ -38,24 +38,6 @@ export default () => {
     </body>
     </html>
     `;
-
-  const getLocale = (req) => {
-    const basePath = urlHelpers.getBasePath(req);
-    const pathname = url.parse(req.originalUrl).pathname;
-    const relativePath = pathname.replace(basePath, '').split('/');
-    const routes = [
-      'api',
-      'login',
-      'logs',
-      'configuration',
-      'users'
-    ];
-    if (routes.indexOf(relativePath[0]) < 0 && relativePath[0] !== '') {
-      return relativePath[0];
-    }
-
-    return req.cookies['dae-locale'] || 'en';
-  };
 
   return (req, res, next) => {
     if (req.url.indexOf('/api') === 0) {
@@ -101,8 +83,8 @@ export default () => {
         assets: {
           customCss: config('CUSTOM_CSS'),
           version: clientVersion,
-          cdnPath: cdnPath,
-          favIcon: favIcon
+          cdnPath,
+          favIcon
         }
       }));
     }

@@ -12,20 +12,25 @@ import UserForm from '../../../../client/components/Users/UserForm';
 
 describe('#Client-Components-UserForm', () => {
   const everythingOptions = {
-    connections: [
-      {
-        name: 'connA', options: { requires_username: true }
-      },
-      {
-        name: 'connB', options: { requires_username: false }
-      }],
-    memberships: ['a', 'b', 'c'],
+    connections: {
+      dbConnections: [
+        {
+          name: 'connA', options: { requires_username: true }
+        },
+        {
+          name: 'connB', options: { requires_username: false }
+        }
+      ]
+    },
+    memberships: [ 'a', 'b', 'c' ],
     hasConnection: 'connA',
-    hasMembership: ['a', 'b']
+    hasMembership: [ 'a', 'b' ]
   };
 
   const renderComponent = (options, languageDictionary) => {
-    options = options || {};
+    options = options || {
+      connections: {}
+    };
     const initialState = {
       form: {
         user: {
@@ -87,9 +92,15 @@ describe('#Client-Components-UserForm', () => {
     checkFields(component, targets);
 
     // Check Buttons
-    expect(component.find(Button).filterWhere(element =>
-      element.text() === 'Cancel').length).to.equal(1);
-    expect(component.find(Button).filterWhere(element => element.text() === 'Create').length).to.equal(1);
+    expect(component.find(Button)
+      .filterWhere(element =>
+        element.text() === 'Cancel').length)
+      .to
+      .equal(1);
+    expect(component.find(Button)
+      .filterWhere(element => element.text() === 'Create').length)
+      .to
+      .equal(1);
   });
 
   it('should render connection, email, password, memberships if create is true', () => {
@@ -139,17 +150,19 @@ describe('#Client-Components-UserForm', () => {
   });
 
   it('should not render connection, email, password, memberships if create is false', () => {
-    const targets = {
-    };
+    const targets = {};
 
     const nothingOptions = {
-      connections: [
-        {
-          name: 'connA', options: { requires_username: true }
-        },
-        {
-          name: 'connB', options: { requires_username: false }
-        }],
+      connections: {
+        dbConnections: [
+          {
+            name: 'connA', options: { requires_username: true }
+          },
+          {
+            name: 'connB', options: { requires_username: false }
+          }
+        ]
+      },
       memberships: [],
       customFields: [
         {
@@ -192,7 +205,7 @@ describe('#Client-Components-UserForm', () => {
     const languageDictionary = {
       createButtonText: 'CreateButton',
       cancelButtonText: 'CancelButton'
-    }
+    };
 
     const targets = {
       username: 'UsernameLabel',

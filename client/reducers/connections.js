@@ -6,7 +6,10 @@ import createReducer from '../utils/createReducer';
 const initialState = {
   loading: false,
   error: null,
-  records: []
+  records: {
+    dbConnections: [],
+    federatedDomains: {}
+  }
 };
 
 export const connections = createReducer(fromJS(initialState), { // eslint-disable-line import/prefer-default-export

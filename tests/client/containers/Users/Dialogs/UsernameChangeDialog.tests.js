@@ -27,9 +27,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         loading: false,
         connection: 'connA'
       }),
-      connections: fromJS({
-        records: options.connections || [ { name: 'connA', options: { requires_username: true } }, { name: 'connB' } ]
-      }),
+      connections: fromJS({ records: { dbConnections: [ { name: 'connA', options: { requires_username: true } }, { name: 'connB' } ] } }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),

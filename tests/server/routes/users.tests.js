@@ -234,7 +234,7 @@ describe('#users router', () => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use('/users', fakeApiClient, addUserToReq, users(storage, scriptManager));
+  app.use('/users', fakeApiClient, addUserToReq, users(scriptManager));
   const domain = new RegExp(config('AUTH0_DOMAIN'));
 
   before(() => {

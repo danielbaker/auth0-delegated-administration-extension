@@ -5,7 +5,10 @@ import * as constants from '../../../client/constants';
 const initialState = {
   loading: false,
   error: null,
-  records: []
+  records: {
+    dbConnections: [],
+    federatedDomains: {}
+  }
 };
 
 describe('connections reducer', () => {
@@ -26,7 +29,10 @@ describe('connections reducer', () => {
       {
         loading: true,
         error: null,
-        records: []
+        records: {
+          dbConnections: [],
+          federatedDomains: {}
+        }
       }
     );
   });
@@ -49,7 +55,10 @@ describe('connections reducer', () => {
           message: 'ERROR',
           status: 500
         },
-        records: []
+        records: {
+          dbConnections: [],
+          federatedDomains: {}
+        }
       }
     );
   });
@@ -59,28 +68,34 @@ describe('connections reducer', () => {
       connections(initialState, {
         type: constants.FETCH_CONNECTIONS_FULFILLED,
         payload: {
-          data: [
-            {
-              id: 'con_test123',
-              name: 'my-custom-db',
-              options: [],
-              enabled_clients: [ 'dMmvp1003V7ph3E8SUR5j93yJZEjX74l' ]
-            }
-          ]
+          data: {
+            dbConnections: [
+              {
+                id: 'con_test123',
+                name: 'my-custom-db',
+                options: [],
+                enabled_clients: [ 'dMmvp1003V7ph3E8SUR5j93yJZEjX74l' ]
+              }
+            ],
+            federatedDomains: {}
+          }
         }
       }).toJSON()
     ).toEqual(
       {
         loading: false,
         error: null,
-        records: [
-          {
-            id: 'con_test123',
-            name: 'my-custom-db',
-            options: [],
-            enabled_clients: [ 'dMmvp1003V7ph3E8SUR5j93yJZEjX74l' ]
-          }
-        ]
+        records: {
+          dbConnections: [
+            {
+              id: 'con_test123',
+              name: 'my-custom-db',
+              options: [],
+              enabled_clients: [ 'dMmvp1003V7ph3E8SUR5j93yJZEjX74l' ]
+            }
+          ],
+          federatedDomains: {},
+        }
       }
     );
   });

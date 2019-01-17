@@ -54,7 +54,7 @@ describe('#Client-Containers-Users-User', () => {
       removeBlockedIPs: basicUsername,
       mfa: basicUsername,
       applications: fromJS({ records: []}),
-      connections: fromJS({ records: []}),
+      connections: fromJS({ records: { dbConnections: [], federatedDomains: [] }}),
       fieldsChange: fromJS({}),
       accessLevel: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] },
       user: fromJS({

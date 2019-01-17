@@ -7,7 +7,7 @@ import tools from 'auth0-extension-tools';
 import { requireScope } from '../lib/middlewares';
 import config from '../lib/config';
 
-import ScriptManager from '../lib/scriptmanager';
+
 import Emailer from '../lib/emailer';
 import getScopes from '../lib/getScopes';
 import * as constants from '../constants';
@@ -20,8 +20,7 @@ import logs from './logs';
 import users from './users';
 import invites from './invites';
 
-export default (storage) => {
-  const scriptManager = new ScriptManager(storage);
+export default (scriptManager) => {
   const managementApiClientMiddlerware = middlewares.managementApiClient({
     domain: config('AUTH0_ISSUER_DOMAIN'),
     clientId: config('AUTH0_CLIENT_ID'),
@@ -121,8 +120,8 @@ export default (storage) => {
   });
   api.use('/applications', managementApiClientMiddlerware, applications());
   api.use('/connections', managementApiClientMiddlerware, connections(scriptManager));
-  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(storage, scriptManager));
-  api.use('/users', managementApiClientMiddlerware, users(storage, scriptManager));
+  api.use('/scripts', requireScope(constants.ADMIN_PERMISSION), scripts(scriptManager));
+  api.use('/users', managementApiClientMiddlerware, users(scriptManager));
   api.use('/invites', invites(emailer, scriptManager));
   api.use('/logs', managementApiClientMiddlerware, logs(scriptManager));
   api.use('/me', me(scriptManager));

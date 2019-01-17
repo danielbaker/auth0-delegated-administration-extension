@@ -10,7 +10,6 @@ export function generateInviteUrl(email, token) {
 }
 
 export function decodeInviteUrlToken(encodedToken) {
-
   const decodedToken = base64url.decode(encodedToken);
   return JSON.parse(decodedToken);
 }

@@ -74,7 +74,7 @@ export default connectContainer(class extends Component {
         <UserForm
           customFields={this.props.userFields || []}
           customFieldGetter={field => field.create}
-          connections={connections.records} initialValues={record}
+          connections={connections.records.dbConnections} initialValues={record}
           createMemberships={this.props.access.canCreateMemberships()}
           memberships={this.props.access.memberships()}
           getDictValue={this.props.getDictValue}

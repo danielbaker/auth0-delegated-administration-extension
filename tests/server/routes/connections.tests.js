@@ -50,7 +50,10 @@ describe('#logs router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections.slice(0, 2));
+          expect(res.body).toEqual({
+            dbConnections: defaultConnections.slice(0, 2),
+            federatedDomains: {}
+          });
           done();
         });
     });
@@ -64,7 +67,10 @@ describe('#logs router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual([]);
+          expect(res.body).toEqual({
+            dbConnections: [],
+            federatedDomains: {}
+          });
           done();
         });
     });
@@ -78,7 +84,10 @@ describe('#logs router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections);
+          expect(res.body).toEqual({
+            dbConnections: defaultConnections,
+            federatedDomains: {}
+          });
           done();
         });
     });
@@ -92,7 +101,10 @@ describe('#logs router', () => {
         .expect(200)
         .end((err, res) => {
           if (err) throw err;
-          expect(res.body).toEqual(defaultConnections);
+          expect(res.body).toEqual({
+            dbConnections: defaultConnections,
+            federatedDomains: {}
+          });
           done();
         });
     });

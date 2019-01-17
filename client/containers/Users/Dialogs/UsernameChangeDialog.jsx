@@ -66,8 +66,8 @@ export default connectContainer(class extends Component {
     const allowedFields = ['username', 'connection'];
     const initialValues = mapValues(user, allowedFields, userFields, 'edit', languageDictionary);
     const fields = _.cloneDeep(userFields) || [];
-    useUsernameField(true, fields, connections.get('records').toJS(), connection, initialValues);
-    useDisabledConnectionField(true, fields, connection, connections.get('records').toJS());
+    useUsernameField(true, fields, connections.get('records').get('dbConnections').toJS(), connection, initialValues);
+    useDisabledConnectionField(true, fields, connection, connections.get('records').get('dbConnections').toJS());
 
     const filteredFields = _.filter(fields,
       field => _.includes(allowedFields, field.property));

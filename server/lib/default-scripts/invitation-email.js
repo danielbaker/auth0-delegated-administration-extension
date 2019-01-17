@@ -1,5 +1,4 @@
-module.exports = `
-<html>
+module.exports = `<html>
 <head>
     <style type="text/css">
         .ExternalClass, .ExternalClass div, .ExternalClass font, .ExternalClass p, .ExternalClass span, .ExternalClass td, img {
@@ -102,11 +101,13 @@ module.exports = `
 
                     <p>Please click below to accept the invitation</p>
 
-                    <a href="{{ invitation_url }}">Accept</a>
+                    <a href="{{ invitationUrl }}">Accept</a>
 
                     <br>
                     Thanks!
                     <br>
+                    
+                    
 
                     <br><br>
                     <hr style="border: 2px solid #EAEEF3; border-bottom: 0; margin: 20px 0;">

@@ -4,23 +4,14 @@ import moment from 'moment';
 import { decodeInviteUrlToken } from '../inviteTokens';
 import logger from '../logger';
 
-/**
- * Validates the invite token within the authorization header.
- * Populates req.invite with the invite if valid.
- */
-
-export default (scriptManager) => async (req, res, next) => {
-  if (!req.headers.authorization || req.headers.authorization.indexOf('Bearer ') !== 0) {
-    return next(new UnauthorizedError('Authentication required for this endpoint.'));
-  }
-
+const verifyToken = async (scriptManager, req) => {
   let decodedToken;
   try {
-    const encodedToken = req.headers.authorization.split(' ')[1];
+    const encodedToken = req.params.token;
     decodedToken = decodeInviteUrlToken(encodedToken);
   } catch (e) {
     logger.error(e);
-    return next(new UnauthorizedError('Invalid token supplied'));
+    throw new UnauthorizedError('Invalid token supplied');
   }
 
   const inviteContext = {
@@ -33,23 +24,37 @@ export default (scriptManager) => async (req, res, next) => {
   try {
     const invite = await scriptManager.execute('invites', inviteContext);
     if (!invite) {
-      return next(new UnauthorizedError('Invite token not found'));
+      throw new UnauthorizedError('Invite token not found');
     }
 
     if (invite.token !== decodedToken.token) {
-      return next(new UnauthorizedError('Invite token not found'));
+      throw new UnauthorizedError('Invite token not found');
     }
 
     if (moment(invite.expiresAt)
       .isBefore(moment())) {
-      return next(new UnauthorizedError('Invite has expired'));
+      throw new UnauthorizedError('Invite has expired');
     }
 
     req.invite = invite;
   } catch (e) {
-    logger.error(e);
-    return next(new UnauthorizedError('Error validating invite token'));
+    throw new UnauthorizedError(`Error validating invite token: ${e}`);
+  }
+};
+
+/**
+ * Validates the invite token within the authorization header.
+ * Populates req.invite with the invite if valid.
+ * Populates req.error with with an error message if invite is not valid.
+ */
+
+export default scriptManager => async (req, res, next) => {
+  try {
+    await verifyToken(scriptManager, req);
+  } catch (e) {
+    logger.error(`accept invitation error: ${e.message}`);
+    req.error = e.message;
   }
 
-  return;
+  next();
 };

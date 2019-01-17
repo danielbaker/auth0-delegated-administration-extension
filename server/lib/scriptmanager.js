@@ -102,7 +102,7 @@ export default class ScriptManager {
     return require(module);
   }
 
-  execute(name, ctx) {
+  async execute(name, ctx) {
     return this.getCached(name)
       .then((script) => {
         if (!script) {
@@ -129,7 +129,7 @@ export default class ScriptManager {
       });
   }
 
-  loadTemplate(name, ctx) {
+  async loadTemplate(name, ctx) {
     return this.getCached(name)
       .then((script) => {
         if (!script) {

@@ -101,7 +101,7 @@ const executeWriteHook = (req, scriptManager, userFields, onlyTheseFields) => {
   return scriptManager.execute('create', context);
 };
 
-export default (storage, scriptManager) => {
+export default (scriptManager) => {
   const api = Router();
 
   /*

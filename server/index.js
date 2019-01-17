@@ -6,13 +6,15 @@ import cookieParser from 'cookie-parser';
 import * as tools from 'auth0-extension-tools';
 import { routes } from 'auth0-extension-express-tools';
 
+import ScriptManager from './lib/scriptmanager';
 import api from './routes/api';
 import hooks from './routes/hooks';
 import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
-import { errorHandler } from './lib/middlewares';
+import { errorHandler, verifyInviteToken } from './lib/middlewares';
+import acceptInvitation from './routes/acceptInvitation';
 
 module.exports = (cfg, storageProvider) => {
   config.setProvider(cfg);
@@ -21,6 +23,7 @@ module.exports = (cfg, storageProvider) => {
     ? new tools.WebtaskStorageContext(storageProvider, { force: 1 })
     : new tools.FileStorageContext(path.join(__dirname, './data.json'), { mergeWrites: true });
 
+  const scriptManager = new ScriptManager(storage);
   const app = new Express();
   app.use((req, res, next) => {
     if (req.webtaskContext) {
@@ -50,10 +53,11 @@ module.exports = (cfg, storageProvider) => {
     scopes: 'read:clients delete:clients read:connections read:users update:users delete:users create:users read:logs read:device_credentials update:device_credentials delete:device_credentials delete:guardian_enrollments'
   }));
 
-  app.use('/api', api(storage));
+  app.use('/api', api(scriptManager));
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/meta', meta());
   app.use('/.extensions', hooks());
+  app.use('/invitation/:token', verifyInviteToken(scriptManager), acceptInvitation(scriptManager));
 
   // Fallback to rendering HTML.
   app.get('*', cookieParser(), htmlRoute());

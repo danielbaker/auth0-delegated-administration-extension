@@ -3,6 +3,7 @@ import { ValidationError } from 'auth0-extension-tools';
 import moment from 'moment';
 import uuid from 'uuid';
 import { checkCustomFieldValidation } from './users';
+import { generateInviteUrl } from "../lib/inviteTokens";
 
 export default (emailer, scriptManager) => {
   const api = Router();
@@ -68,7 +69,8 @@ export default (emailer, scriptManager) => {
             return scriptManager.execute('invites', inviteContext)
               .then((payload) => {
                 inviteContext.payload = payload;
-                return scriptManager.loadTemplate('invitation_email', payload);
+                payload.invitationUrl = generateInviteUrl(payload.email, payload.token);
+                return scriptManager.loadTemplate('invitationEmail', payload);
               })
               .then(emailTemplate =>
                 emailer.send(

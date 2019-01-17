@@ -30,7 +30,7 @@ describe('#Client-Containers-Users-Users', () => {
 
   const renderComponent = (languageDictionary) => {
     const initialState = {
-      connections: fromJS({ records: [{name: 'connA'}]}),
+      connections: fromJS({ records: { dbConnections: [{name: 'connA'}] }}),
       accessLevel: fromJS({ record: { role: 1, permissions: [AUDITOR_PERMISSION, USER_PERMISSION] } }),
       users: fromJS({
         loading: false,
