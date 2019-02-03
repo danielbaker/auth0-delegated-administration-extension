@@ -29,7 +29,9 @@ describe('#Client-Components-UserForm', () => {
 
   const renderComponent = (options, languageDictionary) => {
     options = options || {
-      connections: {}
+      connections: {
+        dbConnections: []
+      }
     };
     const initialState = {
       form: {
@@ -259,7 +261,8 @@ describe('#Client-Components-UserForm', () => {
 
   it('should render based on languageDictionary but missing button labels', () => {
     const languageDictionary = {
-      someOtherKey: 'Some other value'
+      someOtherKey: 'Some other value',
+      connections: { dbConnections: [] }
     };
 
     const Component = renderComponent(languageDictionary);

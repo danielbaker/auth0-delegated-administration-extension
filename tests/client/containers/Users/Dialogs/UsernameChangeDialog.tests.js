@@ -27,7 +27,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
         loading: false,
         connection: 'connA'
       }),
-      connections: fromJS({ records: { dbConnections: [ { name: 'connA', options: { requires_username: true } }, { name: 'connB' } ] } }),
+      connections: fromJS({ records: (options.connections || { dbConnections: [ { name: 'connA', options: { requires_username: true } }, { name: 'connB' } ] }) }),
       languageDictionary: fromJS({
         record: languageDictionary || {}
       }),
@@ -90,7 +90,7 @@ describe('#Client-Containers-Users-Dialogs-UsernameChangeDialog', () => {
     const component = renderComponent(
       {
         username: 'bill',
-        connections: [ { name: 'connA', options: { requires_username: true } } ]
+        connections: { dbConnections: [ { name: 'connA', options: { requires_username: true } } ] }
       });
 
     checkText(component, 'Do you really want to change the username for ', 'bill', '?');

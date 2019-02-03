@@ -11,7 +11,7 @@ import * as useDefaultFields from '../../utils/useDefaultFields';
 class AddUserForm extends Component {
   static propTypes = {
     initialValues: PropTypes.object,
-    connections: PropTypes.array.isRequired,
+    connections: PropTypes.object.isRequired,
     memberships: PropTypes.array.isRequired,
     createMemberships: PropTypes.bool,
     getDictValue: PropTypes.func,
