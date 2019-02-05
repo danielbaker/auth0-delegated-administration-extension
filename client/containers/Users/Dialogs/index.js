@@ -10,3 +10,5 @@ export ResendVerificationEmailDialog from './ResendVerificationEmailDialog';
 export UnblockDialog from './UnblockDialog';
 export RemoveBlocksDialog from './RemoveBlocksDialog';
 export UsernameChangeDialog from './UsernameChangeDialog';
+export CancelInviteDialog from './CancelInviteDialog';
+export ResendInviteDialog from './ResendInviteDialog';

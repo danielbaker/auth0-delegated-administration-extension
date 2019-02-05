@@ -11,6 +11,7 @@ export default history =>
       <Route path="configuration" component={containers.Configuration} />
       <Route path="users" component={containers.Users} />
       <Route path="invites" component={containers.Invites} />
+      <Route path="invites/:id" component={containers.Invite} />
       <Route path="users/:id" component={containers.User} />
     </Route>
     <Route path="/login" component={containers.Login} />

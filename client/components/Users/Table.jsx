@@ -100,6 +100,8 @@ export function GetInviteFields(userFields) {
       listOrder: 1,
       listSize: '25%',
       property: 'email',
+      type: 'link',
+      linkTo: (invite) => `/invites/${invite.id}`,
       label: 'Email',
       search: {
         sort: true

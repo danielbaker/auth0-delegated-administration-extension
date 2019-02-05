@@ -31,7 +31,6 @@ class AddUserForm extends Component {
   render() {
 
     const {
-      submitting,
       customFields,
       connections,
       hasSelectedConnection,

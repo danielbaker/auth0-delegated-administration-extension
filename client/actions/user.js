@@ -5,7 +5,6 @@ import * as constants from '../constants';
 import { fetchUserLogs } from './userLog';
 import { fetchUserDevices } from './userDevice';
 import { getAccessLevel } from './auth';
-import { removeBlockedIPs } from "../reducers/removeBlockedIPs";
 
 const addRequiredTextParam = (url, languageDictionary) => {
   languageDictionary = languageDictionary || {};
@@ -105,6 +104,108 @@ export function fetchInvites(search, reset = false, page = 0, filterBy, sort, on
 }
 
 /*
+ * Fetch an invite.
+ */
+export function fetchInvite(id) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.FETCH_INVITE,
+      payload: {
+        promise: axios.get(`/api/invites/${id}`, {
+          responseType: 'json'
+        })
+      },
+      meta: {
+        id
+      }
+    });
+  };
+}
+
+/*
+ * Get confirmation to cancel an invite.
+ */
+export function requestCancelInvite(id) {
+  return {
+    type: constants.REQUEST_CANCEL_INVITE,
+    id
+  };
+}
+
+/*
+ * cancel a request to cancel an invite.
+ */
+export function cancelRequestCancelInvite(id) {
+  return {
+    type: constants.CANCEL_REQUEST_CANCEL_INVITE,
+    id
+  };
+}
+
+/*
+ * Cancel an invite.
+ */
+export function cancelInvite(id) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.CANCEL_INVITE,
+      payload: {
+        promise: axios.post(`/api/invites/cancel/${id}`, {
+          responseType: 'json'
+        })
+      },
+      meta: {
+        id,
+        onSuccess: () => {
+          // Give indexing some time when we reload invites.
+          setTimeout(() => dispatch(fetchInvites()), 100);
+          dispatch(push('/invites'));
+        }
+      }
+    });
+  };
+}
+
+/*
+ * Get confirmation to resend an invite.
+ */
+export function requestResendInvite(id) {
+  return {
+    type: constants.REQUEST_RESEND_INVITE,
+    id
+  };
+}
+
+/*
+ * cancel a request to resend an invite.
+ */
+export function cancelRequestResendInvite(id) {
+  return {
+    type: constants.CANCEL_REQUEST_RESEND_INVITE,
+    id
+  };
+}
+
+/*
+ * Resend an invite.
+ */
+export function resendInvite(id) {
+  return (dispatch) => {
+    dispatch({
+      type: constants.RESEND_INVITE,
+      payload: {
+        promise: axios.post(`/api/invites/resend/${id}`, {
+          responseType: 'json'
+        })
+      },
+      meta: {
+        id
+      }
+    });
+  };
+}
+
+/*
  * Invite a user.
  */
 export function inviteUser(user, languageDictionary) {
@@ -115,7 +216,7 @@ export function inviteUser(user, languageDictionary) {
         user,
         onSuccess: () => {
           // Give indexing some time when we reload users.
-          setTimeout(() => dispatch(fetchUsers()), 1000);
+          setTimeout(() => dispatch(fetchInvites()), 1000);
           dispatch(getAccessLevel());
         }
       },

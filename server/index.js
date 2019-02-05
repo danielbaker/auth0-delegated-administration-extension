@@ -13,7 +13,7 @@ import meta from './routes/meta';
 import htmlRoute from './routes/html';
 import config from './lib/config';
 import logger from './lib/logger';
-import { errorHandler, verifyInviteToken } from './lib/middlewares';
+import { errorHandler } from './lib/middlewares';
 import acceptInvitation from './routes/acceptInvitation';
 
 module.exports = (cfg, storageProvider) => {
@@ -57,7 +57,7 @@ module.exports = (cfg, storageProvider) => {
   app.use('/app', Express.static(path.join(__dirname, '../dist')));
   app.use('/meta', meta());
   app.use('/.extensions', hooks());
-  app.use('/invitation/:token', verifyInviteToken(scriptManager), acceptInvitation(scriptManager));
+  app.use('/invitation/:token', acceptInvitation(scriptManager));
 
   // Fallback to rendering HTML.
   app.get('*', cookieParser(), htmlRoute());

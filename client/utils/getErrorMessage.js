@@ -24,7 +24,9 @@ const defaultMessages = {
   DELETE_USER: { default: 'An error occurred while deleting the user: {message}' },
   USERNAME_CHANGE: { default: 'An error occurred while changing the username: {message}' },
   FETCH_USERS: { default: 'An error occurred while loading the users list: {message}' },
-  RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' }
+  RESEND_VERIFICATION_EMAIL: { default: 'An error occurred while sending verification email: {message}' },
+  CANCEL_INVITE: { default: 'An error occurred while canceling this invitation: {message}' },
+  RESEND_INVITE: { default: 'An error occurred while resending this invitation: {message}' }
 };
 
 export default (languageDictionary, error, translator) => {

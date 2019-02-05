@@ -2,11 +2,12 @@ import { Router } from 'express';
 
 import getLocale from '../lib/getLocale';
 import config from '../lib/config';
+import { verifyInviteToken } from '../lib/middlewares';
 
 export default (scriptManager) => {
   const api = Router();
 
-  api.get('/', async (req, res, next) => {
+  api.get('/', verifyInviteToken(scriptManager), async (req, res, next) => {
     const acceptInvitationContext = {
       invite: req.invite,
       error: req.error,

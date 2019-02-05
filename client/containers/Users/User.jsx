@@ -62,11 +62,10 @@ export default connectContainer(class extends Component {
   }
 
   render() {
-    const { user, databaseConnections, log, logs, devices, settings, languageDictionary } = this.props;
+    const { user, databaseConnections, log, logs, devices, settings, languageDictionary, access } = this.props;
     const userFields = (settings && settings.userFields) || [];
     const allowedUserFields = userFields.filter(field => field.property !== 'picture' && field.property !== 'client');
     const suppressRawData = settings && settings.suppressRawData === true;
-    const access = this.props.access;
     const originalTitle = (settings.dict && settings.dict.title) || window.config.TITLE || 'User Management';
     document.title = `${languageDictionary.userTitle || 'User Details'} - ${originalTitle}`;
 

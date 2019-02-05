@@ -4,5 +4,6 @@ export Logs from './Logs';
 export RequireAuthentication from './RequireAuthentication';
 export User from './Users/User';
 export Users from './Users/Users';
+export Invite from './Users/Invite';
 export Invites from './Users/Invites';
 export Configuration from './Configuration/Configuration';

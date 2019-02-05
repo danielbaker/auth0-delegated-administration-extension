@@ -1,55 +1,68 @@
 export default function (ctx, callback) {
   const _ = require('lodash');
   const getInvites = () => ctx.read()
-      .then((data) => {
-        data.invites = data.invites || {};
-        return data;
-      });
+    .then((data) => {
+      data.invites = data.invites || {};
+      return data;
+    });
+
+  const getInvite = (id, email) => getInvites()
+    .then((data) => {
+      if (email) return data.invites[ email ];
+      return _.find(data.invites, invite => invite.id === id);
+    });
 
   switch (ctx.method) {
-    case 'store-new-invite':
+    case 'store-new-invite': {
       getInvites()
         .then((data) => {
-          data.invites[ctx.payload.email] = ctx.payload;
+          data.invites[ ctx.payload.email ] = ctx.payload;
           return ctx.write(data);
-        }).then(() => {
+        })
+        .then(() => {
           callback(null, ctx.payload);
-        }).catch((e) => {
+        })
+        .catch((e) => {
           callback(e);
         });
       break;
+    }
 
-    case 'fetch-invite':
-      const { payload: { email } } = ctx;
-      getInvites()
-        .then((data) => {
-          callback(null, data.invites[email]);
-        }).catch((e) => {
+    case 'fetch-invite': {
+      const { payload: { email, id } } = ctx;
+      getInvite(id, email)
+        .then((invite) => {
+          callback(null, invite);
+        })
+        .catch((e) => {
           callback(e);
         });
       break;
+    }
 
-    case 'fetch-invites':
-      const { payload: {
-        search,
-        sortProperty,
-        sortOrder,
-        perPage,
-        page
-      } } = ctx;
+    case 'fetch-invites': {
+      const {
+        payload: {
+          search,
+          sortProperty,
+          sortOrder,
+          perPage,
+          page
+        }
+      } = ctx;
 
       getInvites()
         .then((data) => {
           // get all invites in an array
-          const invites = _.values(data.invites)
+          const invites = _.values(data.invites);
 
           // filter the invites based on the incoming search string
           const filteredInvites = search ? invites.filter(invite => invite.email.includes(search)) : invites;
 
           // Sort the invites by the sortProperty and sortOrder
           filteredInvites.sort((a, b) => {
-            if (a[sortProperty] > b[sortProperty]) return sortOrder;
-            if (a[sortProperty] < b[sortProperty]) return -sortOrder;
+            if (a[ sortProperty ] > b[ sortProperty ]) return sortOrder;
+            if (a[ sortProperty ] < b[ sortProperty ]) return -sortOrder;
             return 0;
           });
 
@@ -69,12 +82,40 @@ export default function (ctx, callback) {
             limit: perPage,
             start: perPage * page,
             total: invites.length,
-            invites: mappedInvites,
+            invites: mappedInvites
           });
-        }).catch((e) => {
+        })
+        .catch((e) => {
           callback(e);
         });
       break;
+    }
+
+    case 'delete-invite': {
+      const { payload: { email, id } } = ctx;
+      getInvite(id, email)
+        .then((invite) => {
+          if (!invite) {
+            callback('Invite not found');
+          } else {
+            getInvites()
+              .then((data) => {
+                _.unset(data.invites, invite.email);
+                return ctx.write(data);
+              })
+              .then(() => {
+                callback(null, null);
+              })
+              .catch((e) => {
+                callback(e);
+              });
+          }
+        })
+        .catch((e) => {
+          callback(e);
+        });
+      break;
+    }
 
     default:
       callback(`Unknown context method: ${ctx.method}`);
